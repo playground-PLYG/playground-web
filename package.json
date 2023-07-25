@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "format": "prettier --check --ignore-path .gitignore .",
+    "format:fix": "prettier --write --ignore-path .gitignore .",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -26,6 +31,18 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
-    "eslint-config-prettier": "^8.8.0"
+    "@storybook/addon-essentials": "^7.1.1",
+    "@storybook/addon-interactions": "^7.1.1",
+    "@storybook/addon-links": "^7.1.1",
+    "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/blocks": "^7.1.1",
+    "@storybook/nextjs": "^7.1.1",
+    "@storybook/react": "^7.1.1",
+    "@storybook/testing-library": "^0.2.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-storybook": "^0.6.13",
+    "prettier": "^3.0.0",
+    "sb": "^7.1.1",
+    "storybook": "^7.1.1"
   }
 }
