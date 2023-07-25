@@ -1,11 +1,11 @@
-import { Button } from '@mui/material';
+import { Button } from '@mui/material'
 
 interface Props {
-  readonly color?: 'primary' | 'secondary' | undefined;
-  readonly backgroundColor?: string;
-  readonly size?: 'small' | 'medium' | 'large';
-  readonly label: string;
-  readonly onClick?: () => void;
+  readonly color?: 'primary' | 'secondary' | undefined
+  readonly backgroundColor?: string
+  readonly size?: 'small' | 'medium' | 'large'
+  readonly label: string
+  readonly onClick?: () => void
 }
 
 export const SampleButton = ({
@@ -21,8 +21,9 @@ export const SampleButton = ({
       color={color}
       size={size}
       style={{ backgroundColor }}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       {label}
     </Button>
-  );
-};
+  )
+}
