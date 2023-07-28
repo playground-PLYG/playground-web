@@ -23,6 +23,7 @@ interface Data {
   email: string;
 }
 
+
 // 테이블 header 영역 구조
 interface HeadCell {
   disablePadding: boolean;
@@ -78,9 +79,10 @@ const TableSample = () => {
   const [rows, setData] = React.useState<Array<Data>>([]);
 
   React.useEffect(() => {
-    axios.get("/playground/public/sample/paging/list")
-      .then(({ data }) => {
-        setData(data.data);
+    // TODO 검색영역 만들고 검색어 payload처리 및 화면 페이징 로직 수정
+    axios.post<GlobalTypes.ApiPagingResponse<Data>>("/playground/public/sample/users", { userId: 'test' })
+      .then(({ data: { data: { content } } }) => {
+        setData(content);
         setIsLoading(false)
       })
       .catch((error) => {
