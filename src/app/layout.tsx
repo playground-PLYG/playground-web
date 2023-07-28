@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { Suspense } from 'react'
+import Loading from './loading'
 import Link from 'next/link'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -31,6 +33,7 @@ const LINKS = [
   { text: 'Home', href: '/', icon: HomeIcon },
   { text: 'Starred', href: '/starred', icon: StarIcon },
   { text: 'Tasks', href: '/tasks', icon: ChecklistIcon },
+  { text: 'TableSample', href: '/table-sample', icon: ChecklistIcon },
 ]
 
 const PLACEHOLDER_LINKS = [
@@ -110,7 +113,9 @@ export default function RootLayout({
               p: 3,
             }}
           >
+            <Suspense fallback={<Loading />}>
             {children}
+            </Suspense>
           </Box>
         </ThemeRegistry>
       </body>
