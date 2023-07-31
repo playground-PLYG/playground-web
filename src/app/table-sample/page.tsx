@@ -1,20 +1,21 @@
 "use client"
 
 import * as React from 'react'
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Skeleton from '@mui/material/Skeleton';
+import { 
+          Box, Paper, Divider, Toolbar, Typography, Skeleton,
+          TableContainer, Table, TableHead, TableBody, TableRow, TableCell, TablePagination,
+          TextField, InputLabel, Button
+        } from '@mui/material';
 
 import axios from '@/lib/axios';
+import commUtils from '@/utils/common'
+
+// api로 조회할 검색 조건 데이터 구조
+interface Search {
+  userId: string;
+  name: string;
+  email: string;
+}
 
 // api로 조회할 데이터 구조
 interface Data {
@@ -22,7 +23,6 @@ interface Data {
   name: string;
   email: string;
 }
-
 
 // 테이블 header 영역 구조
 interface HeadCell {
@@ -57,8 +57,8 @@ const headCells: readonly HeadCell[] = [
 // 데이터 loading 시 skeleton 표시
 const TableRowsLoader: React.FC<{ rowsNum: number }> = ({ rowsNum }) => {
   return [...Array<number>(rowsNum)].map((row, index) => (
-    <TableRow key={index}>
-      <TableCell component="th" scope="row">
+    <TableRow key={ index }>
+      <TableCell>
         <Skeleton animation="wave" variant="text" />
       </TableCell>
       <TableCell>
@@ -75,51 +75,87 @@ const TableRowsLoader: React.FC<{ rowsNum: number }> = ({ rowsNum }) => {
 const TableSample = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
+  const [totalCount, setTotalCount] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setData] = React.useState<Array<Data>>([]);
+  const [search, setSearch] = React.useState<Search>({
+                                                      userId: '',
+                                                      name: '',
+                                                      email: ''
+                                                    });
+
+  const { userId, name, email } = search
+
+  // 검색조건 input 변경사항 search에 반영 이벤트
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
+
+    setSearch({
+      ...search,
+      [name]: value
+    });
+  };
+
+  // 검색조건 초기화 이벤트
+  const onReset = () => {
+    setSearch({
+      userId: '',
+      name: '',
+      email: ''
+    })
+  };
+
+  // 검색버튼 클릭 이벤트
+  const onSearch = () => {
+    getUesrList(page, rowsPerPage)
+  }
+
+  // 데이터 조회 함수
+  const getUesrList = (pageNumber: number, pageSize: number) => {
+    setIsLoading(true)
+
+    axios.post<GlobalTypes.ApiPagingResponse<Data>>("/playground/public/sample/users" + commUtils.getPageQueryString(pageNumber, pageSize), search)
+    .then(({ data: { data: { content, totalElements, empty } } }) => {
+      // 검색 결과가 있는대 현재 페이지가 조회된 목록의 totlaPage를 넘어갈 때 1페이지로 보냄
+      // ex) 10페이지에서 검색조건으로 검색 후 검색 결과가 총 10페이지 미만인 경우
+      if (totalElements > 0 && empty) {
+        setPage(0);
+        getUesrList(0, pageSize)
+      } else {
+        setData(content);
+        setTotalCount(totalElements)
+        setIsLoading(false)
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
 
   React.useEffect(() => {
-    // TODO 검색영역 만들고 검색어 payload처리 및 화면 페이징 로직 수정
-    axios.post<GlobalTypes.ApiPagingResponse<Data>>("/playground/public/sample/users", { userId: 'test' })
-      .then(({ data: { data: { content } } }) => {
-        setData(content);
-        setIsLoading(false)
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    getUesrList(page, rowsPerPage);
   }, []);
-
-  // TODO 페이징 처리 시 각 페이지에 표시 할 데이터만 조회하도록 변경 (현재 전체 data조회 후 화면에서 표시 할 데이터만 잘라쓰고있음)
-  // 화면에 표출 할 row 계산
-  const visibleRows = React.useMemo(
-    () => 
-    rows.slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage,
-    ),
-    [rows, page, rowsPerPage],
-  );
 
   // Table row 클릭 시 이벤트
   const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    console.log('>>> handleClidk', name)
+    console.log('>>> handleClick', name)
   };
 
   // TablePagination의 page 변경 시 이벤트
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
+    getUesrList(newPage, rowsPerPage);
   };
 
   // TablePagination의 rowPerPage 변경 시 이벤트
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    getUesrList(page, rowsPerPage)
   };
 
-  // 조회 결과 수가 rowsPerPage보다 작을 때(ex) 마지막 페이지) ui 일관성 유지를 위해 비어있는 row 추가
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  // 조회 결과 수가 rowsPerPage보다 작을 때(ex) 마지막 페이지) ui 일관성 유지를 위해 비어있는 row 영역 추가
+  const emptyRows = page > 0 ? Math.max(0, rowsPerPage - rows.length) : 0;
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -139,6 +175,64 @@ const TableSample = () => {
             사용자 목록
           </Typography>
         </Toolbar>
+
+        <TableContainer>
+          <Table
+            sx={{ minWidth: 750 }}
+            aria-labelledby="tableTitle"
+          >
+            <TableBody>
+              <TableRow
+                tabIndex={-1}
+              >
+                <TableCell component="th">
+                  <InputLabel htmlFor="search-user-id">사용자ID</InputLabel>
+                </TableCell>
+                <TableCell align="left">
+                  <TextField id="search-user-id" label="사용자ID" name="userId" value={userId} variant="outlined" onChange={handleInputChange} />
+                </TableCell>
+
+                <TableCell component="th">
+                  <InputLabel htmlFor="search-name">사용자명</InputLabel>
+                </TableCell>
+                <TableCell align="left">
+                  <TextField id="search-name" label="사용자명" name="name" value={name} variant="outlined" onChange={handleInputChange} />
+                </TableCell>
+
+                <TableCell component="th">
+                  <InputLabel htmlFor="search-email">이메일</InputLabel>
+                </TableCell>
+                <TableCell align="left">
+                  <TextField id="search-email" label="이메일" name="email" value={email} variant="outlined" onChange={handleInputChange} />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            '& > *': {
+              m: 1,
+            },
+            marginTop: 1
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              marginRight: 1
+            }}
+          >
+            <Button size="medium" color="secondary" variant="contained" onClick={onReset}>초기화</Button>
+            <Button size="medium" color="primary" variant="contained" sx={{ marginLeft: 1 }} onClick={onSearch}>조회</Button>
+          </Box>
+        </Box>
+
+        <Divider sx={{ marginTop: 1, marginBottom: 1 }} />
+
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -153,61 +247,57 @@ const TableSample = () => {
                       align='center'
                       padding={headCell.disablePadding ? 'none' : 'normal'}
                     >
-                        {headCell.label}
+                      {headCell.label}
                     </TableCell>
                   ))
                 }
               </TableRow>
             </TableHead>
-              <TableBody>
-                {
-                  // 로딩중인 경우 skelton표시, 데이터 조회 되면 row 표시
-                  isLoading ? (<TableRowsLoader rowsNum={rowsPerPage} />) : (visibleRows.map((row, index) => {
-                    const labelId = `table-checkbox-${index}`;
+            <TableBody>
+              {
+                // 로딩중인 경우 skelton표시, 데이터 조회 되면 row 표시
+                isLoading ? (<TableRowsLoader rowsNum={rowsPerPage} />) : (rows.map((row, index) => {
+                  const labelId = `table-${index}`;
 
-                    return (
-                      <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, row.name)}
-                        tabIndex={-1}
-                        key={row.userId+'_'+row.email}
-                        sx={{ cursor: 'pointer' }}
-                      >
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                        >
-                          {row.userId}
-                        </TableCell>
-                        <TableCell align="left">{row.name}</TableCell>
-                        <TableCell align="center">{row.email}</TableCell>
-                      </TableRow>
-                    );
-                  }))
-                }
-
-                {
-                  emptyRows > 0 && (
+                  return (
                     <TableRow
-                      style={{
-                        height: 33 * emptyRows,
-                      }}
+                      hover
+                      onClick={(event) => handleClick(event, row.name)}
+                      tabIndex={-1}
+                      key={row.userId+'_'+row.email}
+                      sx={{ cursor: 'pointer' }}
                     >
-                      <TableCell colSpan={3} />
+                      <TableCell id={labelId}>{row.userId}</TableCell>
+                      <TableCell align="left">{row.name}</TableCell>
+                      <TableCell align="center">{row.email}</TableCell>
                     </TableRow>
-                  )
-                }
-              </TableBody>
+                  );
+                }))
+              }
+
+              {
+                !isLoading && emptyRows > 0 ? (
+                  <TableRow
+                    style={{
+                      height: 52.8 * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={3} />
+                  </TableRow>
+                ) : <></>
+              }
+            </TableBody>
           </Table>
         </TableContainer>
 
         <TablePagination
           rowsPerPageOptions={[5, 10, 25, 50, 100]}
           component="div"
-          count={rows.length}
+          count={totalCount}
           rowsPerPage={rowsPerPage}
           page={page}
+          showFirstButton={true}
+          showLastButton={true}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
