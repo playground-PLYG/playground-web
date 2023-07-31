@@ -113,9 +113,7 @@ export default function RootLayout({
               p: 3,
             }}
           >
-            <Suspense fallback={<Loading />}>
-            {children}
-            </Suspense>
+            <Suspense fallback={<Loading />}>{children}</Suspense>
           </Box>
         </ThemeRegistry>
       </body>
