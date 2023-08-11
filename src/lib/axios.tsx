@@ -6,7 +6,7 @@ const $axios = axios.create({
 
 $axios.interceptors.request.use(
   (config) => {
-    // console.log('>>> axios request interceptor', config)
+    console.log('>>> axios request interceptor', config)
     return config
   },
   (error) => {
@@ -17,7 +17,7 @@ $axios.interceptors.request.use(
 
 $axios.interceptors.response.use(
   (response) => {
-    // console.log('>>> axios response interceptor', response)
+    console.log('>>> axios response interceptor', response)
 
     return response
   },
