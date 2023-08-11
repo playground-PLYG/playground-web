@@ -6,6 +6,9 @@ const $axios = axios.create({
 
 $axios.interceptors.request.use(
   (config) => {
+    console.log('>>> process.env', process.env)
+    console.log('>>> process.env.NEXT_PUBLIC_ENV_TYPE', process.env.NEXT_PUBLIC_ENV_TYPE)
+    console.log('>>> process.env.NEXT_PUBLIC_API_BASE_URL', process.env.NEXT_PUBLIC_API_BASE_URL)
     console.log('>>> axios request interceptor', config)
     return config
   },
