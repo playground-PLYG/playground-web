@@ -26,7 +26,11 @@ import axios from '@/lib/axios'
 import { Metadata, ResolvingMetadata } from 'next'
 import { headers } from 'next/headers'
 
-//export const dynamic = 'force-dynamic'
+declare const process : {
+  env: {
+    VERCEL_URL: string
+  }
+}
 
 export async function generateMetadata(
   //{ params, searchParams }: Props,
@@ -39,6 +43,8 @@ export async function generateMetadata(
   const { data } = await axios.get<
     GlobalTypes.ApiResponse<GlobalTypes.Metadata>
   >('/playground/public/metadata?url=' + url)
+
+  
 
   if (data) {
     return {
@@ -53,6 +59,7 @@ export async function generateMetadata(
         url: data.data.ogUrl,
         siteName: data.data.ogSiteName,
       },
+      metadataBase: new URL(process.env.VERCEL_URL),
       icons: {
         icon: data.data.icon,
         apple: data.data.apple,
