@@ -53,9 +53,6 @@ export async function generateMetadata(
         url: data.data.ogUrl,
         siteName: data.data.ogSiteName,
       },
-      metadataBase: data.data.metadataBase
-        ? new URL(data.data.metadataBase)
-        : null,
       icons: {
         icon: data.data.icon,
         apple: data.data.apple,
