@@ -25,7 +25,9 @@ import ThemeRegistry from '@/components/ThemeRegistry/ThemeRegistry'
 import axios from '@/lib/axios'
 import { Metadata, ResolvingMetadata } from 'next'
 import { headers } from "next/headers";
- 
+
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata(
   //{ params, searchParams }: Props,
   props: any,
