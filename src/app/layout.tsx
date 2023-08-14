@@ -63,7 +63,7 @@ export async function generateMetadata(
         url: data.data.ogUrl,
         siteName: data.data.ogSiteName,
       },
-      metadataBase: new URL(process.env.VERCEL_URL),
+      metadataBase: new URL(process.env.VERCEL_URL.includes("http") ? process.env.VERCEL_URL : 'https://' + process.env.VERCEL_URL),
       icons: {
         icon: data.data.icon,
         apple: data.data.apple,
