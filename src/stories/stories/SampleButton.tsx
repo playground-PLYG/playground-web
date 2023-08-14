@@ -1,7 +1,7 @@
 import { Button } from '@mui/material'
 
 interface Props {
-  readonly color?: 'primary' | 'secondary' | undefined
+  readonly color?: 'primary' | 'secondary'
   readonly backgroundColor?: string
   readonly size?: 'small' | 'medium' | 'large'
   readonly label: string
