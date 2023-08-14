@@ -24,19 +24,21 @@ import ThemeRegistry from '@/components/ThemeRegistry/ThemeRegistry'
 
 import axios from '@/lib/axios'
 import { Metadata, ResolvingMetadata } from 'next'
-import { headers } from "next/headers";
+import { headers } from 'next/headers'
 
-export const dynamic = 'force-dynamic'
+//export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(
   //{ params, searchParams }: Props,
   props: any,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const headersList = headers();
-  const url = headersList.get("x-invoke-path") || "";
+  const headersList = headers()
+  const url = headersList.get('x-invoke-path') || ''
 
-  const { data } = await axios.get<GlobalTypes.ApiResponse<GlobalTypes.Metadata>>("/playground/public/metadata?url=" + url)
+  const { data } = await axios.get<
+    GlobalTypes.ApiResponse<GlobalTypes.Metadata>
+  >('/playground/public/metadata?url=' + url)
 
   if (data) {
     return {
@@ -51,15 +53,17 @@ export async function generateMetadata(
         url: data.data.ogUrl,
         siteName: data.data.ogSiteName,
       },
-      metadataBase: data.data.metadataBase ? new URL(data.data.metadataBase) : null,
+      metadataBase: data.data.metadataBase
+        ? new URL(data.data.metadataBase)
+        : null,
       icons: {
         icon: data.data.icon,
-        apple: data.data.apple
-      }
+        apple: data.data.apple,
+      },
     }
   } else {
     return {
-      title: 'playground'
+      title: 'playground',
     }
   }
 }

@@ -50,7 +50,7 @@ namespace GlobalTypes {
    * @prop {boolean} sort.empty
    * @prop {boolean} sort.unsorted
    * @prop {boolean} sort.sorted
-   * 
+   *
    * @prop {number} totalElements 전체 row 수
    * @prop {boolean} last 마지막 페이지 여부
    * @prop {number} totalPages 총 페이지 수
@@ -103,7 +103,7 @@ namespace GlobalTypes {
     size?: string
     sort?: string
   }
-  
+
   /**
    * SEO를 위한 Metadata 구조
    *
@@ -112,17 +112,17 @@ namespace GlobalTypes {
    */
   export interface Metadata {
     url: string
-		title: string
-		description: string
-		category: string
-		keywords: string[]
-		ogTitle: string
-		ogDescription: string
-		ogUrl: string
-		ogSiteName: string
-		ogImages: string[]
-		metadataBase: string
-		icon: string
-		apple: string
+    title: string
+    description: string
+    category: string
+    keywords: string[]
+    ogTitle: string
+    ogDescription: string
+    ogUrl: string
+    ogSiteName: string
+    ogImages: string[]
+    metadataBase: string
+    icon: string
+    apple: string
   }
 }
