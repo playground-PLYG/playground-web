@@ -46,7 +46,7 @@ export async function generateMetadata(
 
   
 
-  if (data) {
+  if (data?.data) {
     return {
       title: data.data.title,
       description: data.data.description,
