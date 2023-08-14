@@ -36,29 +36,30 @@ export async function generateMetadata(
   const headersList = headers();
   const url = headersList.get("x-invoke-path") || "";
 
-  console.log('>>> generateMetadata :: url', url)
+  const { data } = await axios.get<GlobalTypes.ApiResponse<GlobalTypes.Metadata>>("/playground/public/metadata?url=" + url)
 
-  const { data: { data } } = await axios.get<GlobalTypes.ApiResponse<GlobalTypes.Metadata>>("/playground/public/metadata?url=" + url)
-
-  console.log('>>> data', data)
-
-
-  return {
-    title: data.title,
-    description: data.description,
-    category: data.category,
-    keywords: data.keywords,
-    openGraph: {
-      title: data.ogTitle,
-      description: data.ogDescription,
-      images: data.ogImages,
-      url: data.ogUrl,
-      siteName: data.ogSiteName,
-    },
-    metadataBase: data.metadataBase ? new URL(data.metadataBase) : null,
-    icons: {
-      icon: data.icon,
-      apple: data.apple
+  if (data) {
+    return {
+      title: data.data.title,
+      description: data.data.description,
+      category: data.data.category,
+      keywords: data.data.keywords,
+      openGraph: {
+        title: data.data.ogTitle,
+        description: data.data.ogDescription,
+        images: data.data.ogImages,
+        url: data.data.ogUrl,
+        siteName: data.data.ogSiteName,
+      },
+      metadataBase: data.data.metadataBase ? new URL(data.data.metadataBase) : null,
+      icons: {
+        icon: data.data.icon,
+        apple: data.data.apple
+      }
+    }
+  } else {
+    return {
+      title: 'playground'
     }
   }
 }
