@@ -38,13 +38,17 @@ export async function generateMetadata(
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const headersList = headers()
-  const url = headersList.get('x-invoke-path') || ''
+  const url = headersList.get('x-invoke-path')
+
+  if (!url) {
+    return {
+      title: 'playground',
+    }
+  }
 
   const { data } = await axios.get<
     GlobalTypes.ApiResponse<GlobalTypes.Metadata>
   >('/playground/public/metadata?url=' + url)
-
-  
 
   if (data?.data) {
     return {
