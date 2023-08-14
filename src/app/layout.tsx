@@ -40,6 +40,9 @@ export async function generateMetadata(
   const headersList = headers()
   const url = headersList.get('x-invoke-path')
 
+  console.log('>>> x-invoke-path', headersList.get('x-invoke-path'))
+  console.log('>>> x-pathname', headersList.get('x-pathname'))
+
   if (!url) {
     return {
       title: 'playground',
