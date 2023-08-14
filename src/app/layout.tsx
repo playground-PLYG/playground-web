@@ -22,9 +22,43 @@ import SupportIcon from '@mui/icons-material/Support'
 import LogoutIcon from '@mui/icons-material/Logout'
 import ThemeRegistry from '@/components/ThemeRegistry/ThemeRegistry'
 
-export const metadata = {
-  title: 'Next.js App Router + Material UI v5',
-  description: 'Next.js App Router + Material UI v5',
+import axios from '@/lib/axios'
+import { Metadata, ResolvingMetadata } from 'next'
+import { headers } from "next/headers";
+ 
+export async function generateMetadata(
+  //{ params, searchParams }: Props,
+  props: any,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const headersList = headers();
+  const url = headersList.get("x-invoke-path") || "";
+
+  console.log('>>> generateMetadata :: url', url)
+
+  const { data: { data } } = await axios.get<GlobalTypes.ApiResponse<GlobalTypes.Metadata>>("/playground/public/metadata?url=" + url)
+
+  console.log('>>> data', data)
+
+
+  return {
+    title: data.title,
+    description: data.description,
+    category: data.category,
+    keywords: data.keywords,
+    openGraph: {
+      title: data.ogTitle,
+      description: data.ogDescription,
+      images: data.ogImages,
+      url: data.ogUrl,
+      siteName: data.ogSiteName,
+    },
+    metadataBase: data.metadataBase ? new URL(data.metadataBase) : null,
+    icons: {
+      icon: data.icon,
+      apple: data.apple
+    }
+  }
 }
 
 const DRAWER_WIDTH = 240
@@ -57,7 +91,7 @@ export default function RootLayout({
                 sx={{ color: '#444', mr: 2, transform: 'translateY(-2px)' }}
               />
               <Typography variant="h6" noWrap component="div" color="black">
-                Next.js App Router
+                Playground
               </Typography>
             </Toolbar>
           </AppBar>

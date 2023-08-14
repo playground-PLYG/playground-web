@@ -103,4 +103,26 @@ namespace GlobalTypes {
     size?: string
     sort?: string
   }
+  
+  /**
+   * SEO를 위한 Metadata 구조
+   *
+   * @typedef Metadata
+   *
+   */
+  export interface Metadata {
+    url: string
+		title: string
+		description: string
+		category: string
+		keywords: string[]
+		ogTitle: string
+		ogDescription: string
+		ogUrl: string
+		ogSiteName: string
+		ogImages: string[]
+		metadataBase: string
+		icon: string
+		apple: string
+  }
 }
