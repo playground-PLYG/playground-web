@@ -1,3 +1,5 @@
+
+
 import * as React from 'react'
 import { Suspense } from 'react'
 import Loading from './loading'
@@ -20,11 +22,15 @@ import ChecklistIcon from '@mui/icons-material/Checklist'
 import SettingsIcon from '@mui/icons-material/Settings'
 import SupportIcon from '@mui/icons-material/Support'
 import LogoutIcon from '@mui/icons-material/Logout'
+import Login from '@mui/icons-material/Login'
 import ThemeRegistry from '@/components/ThemeRegistry/ThemeRegistry'
 
 import axios from '@/lib/axios'
 import { Metadata, ResolvingMetadata } from 'next'
 import { headers } from 'next/headers'
+
+import { useRouter } from 'next/router'
+
 
 declare const process : {
   env: {
@@ -88,13 +94,15 @@ const LINKS = [
 const PLACEHOLDER_LINKS = [
   { text: 'Settings', icon: SettingsIcon },
   { text: 'Support', icon: SupportIcon },
-  { text: 'Logout', icon: LogoutIcon },
+  { text: 'Login',  href: '/kakao-login', icon: Login },
+  { text: 'Logout',icon: LogoutIcon }
 ]
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
+  
 }) {
   return (
     <html lang="ko">
@@ -140,9 +148,9 @@ export default function RootLayout({
             </List>
             <Divider sx={{ mt: 'auto' }} />
             <List>
-              {PLACEHOLDER_LINKS.map(({ text, icon: Icon }) => (
+              {PLACEHOLDER_LINKS.map(({ text, href, icon: Icon }) => (
                 <ListItem key={text} disablePadding>
-                  <ListItemButton>
+                  <ListItemButton component='a' href={href}>
                     <ListItemIcon>
                       <Icon />
                     </ListItemIcon>
