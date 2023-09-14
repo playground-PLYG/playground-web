@@ -5,7 +5,6 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
-import { useQueryClient } from 'react-query'
 
 export default function KakaoLogin() {
   //const queryClient = useQueryClient()
