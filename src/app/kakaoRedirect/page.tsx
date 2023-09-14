@@ -26,7 +26,7 @@ export default function KakaoLogin() {
             'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
         }
       }
-      
+      console.trace()
       axios.post('https://kauth.kakao.com/oauth/token', data, config) 
       .then((response ) => {
         console.log(response.data)

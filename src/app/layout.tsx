@@ -95,7 +95,7 @@ const PLACEHOLDER_LINKS = [
   { text: 'Settings', icon: SettingsIcon },
   { text: 'Support', icon: SupportIcon },
   { text: 'Login',  href: '/kakao-login', icon: Login },
-  { text: 'Logout', href: '/kakao-logout', icon: LogoutIcon }
+  { text: 'Logout', href: '/kakaoLogout1', icon: LogoutIcon }
 ]
 
 export default function RootLayout({
