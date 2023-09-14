@@ -95,7 +95,7 @@ const PLACEHOLDER_LINKS = [
   { text: 'Settings', icon: SettingsIcon },
   { text: 'Support', icon: SupportIcon },
   { text: 'Login',  href: '/kakao-login', icon: Login },
-  { text: 'Logout',icon: LogoutIcon }
+  { text: 'Logout', href: '/kakaoLogout1', icon: LogoutIcon }
 ]
 
 export default function RootLayout({
@@ -150,7 +150,7 @@ export default function RootLayout({
             <List>
               {PLACEHOLDER_LINKS.map(({ text, href, icon: Icon }) => (
                 <ListItem key={text} disablePadding>
-                  <ListItemButton component='a' href={href}>
+                  <ListItemButton component='a' href={href} >
                     <ListItemIcon>
                       <Icon />
                     </ListItemIcon>

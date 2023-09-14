@@ -4,9 +4,11 @@ import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/navigation'
-import axios from "axios"
+import axios from 'axios'
+import { useQueryClient } from 'react-query'
 
 export default function KakaoLogin() {
+  //const queryClient = useQueryClient()
   const [userInfo, setUserInfo] = React.useState({
     nickname: ""
   })
@@ -24,12 +26,17 @@ export default function KakaoLogin() {
             'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
         }
       }
-      
+      console.trace()
       axios.post('https://kauth.kakao.com/oauth/token', data, config) 
       .then((response ) => {
         console.log(response.data)
         config.headers.Authorization += response.data.access_token
-        console.log('config :: ',config)
+
+        localStorage.setItem('TOKEN',response.data.access_token)
+        console.log('localstorege getItem :: ', localStorage.getItem('TOKEN'))
+         // 토큰을 react-query를 사용해 저장
+        //queryClient.setQueryData('token', response.data.access_token)/
+         
 
         axios.post('https://kapi.kakao.com/v2/user/me', {}, config)
         .then((res) => {
@@ -45,6 +52,7 @@ export default function KakaoLogin() {
         })
       })        
     }, [])
+     
   
   return (
     <Container>
