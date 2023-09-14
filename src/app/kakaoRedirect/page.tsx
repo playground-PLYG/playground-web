@@ -11,21 +11,11 @@ export default function KakaoLogin() {
     nickname: ""
   })
   React.useEffect(() => {
-        
-      const params= new URL(document.location.toString()).searchParams
-      const code = params.get('code')
-
-      const param: any = {
-          grant_type: 'authorization_code',
-          client_id: '7e7b63658cacaa73e2a412dcd713bb8a',
-          redirect_uri: 'http://localhost:3000/kakaoRedirect',
-          code: code,
-      }
       const data ={
         grant_type: 'authorization_code',
         client_id: '7e7b63658cacaa73e2a412dcd713bb8a',
-        redirect_uri: 'http://localhost:3000/kakaoRedirect',
-        code: code,
+        redirect_uri: new URL(document.location.origin ) +'/kakaoRedirect',
+        code: new URL(document.location.toString()).searchParams.get('code')
       }
       // console.log('param ::', param)
       const config = {
@@ -36,26 +26,24 @@ export default function KakaoLogin() {
       }
       
       axios.post('https://kauth.kakao.com/oauth/token', data, config) 
-      .then((response : any) => {
+      .then((response ) => {
         console.log(response.data)
         config.headers.Authorization += response.data.access_token
         console.log('config :: ',config)
 
         axios.post('https://kapi.kakao.com/v2/user/me', {}, config)
-          .then((res) => {
-            console.log('개인 정보 확인 ', res.data.properties.nickname)
-            const nickname = res.data.properties.nickname
-            setUserInfo({nickname})
-            window.alert('로그인 햇습니다')
-            // console.log('userinfo ::', userInfo)
-          })
-          .catch(error => {
-            console.error(error)   
-            window.alert('로그인을 실패했습니다.')
-          })
-      })
-      console.log()
-        
+        .then((res) => {
+          console.log('개인 정보 확인 ', res.data.properties.nickname)
+          const nickname = res.data.properties.nickname
+          setUserInfo({nickname})
+          window.alert('로그인 햇습니다')
+          // console.log('userinfo ::', userInfo)
+        })
+        .catch(error => {
+          console.error(error)   
+          window.alert('로그인을 실패했습니다.')
+        })
+      })        
     }, [])
   
   return (
