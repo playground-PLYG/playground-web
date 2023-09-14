@@ -11,47 +11,39 @@ export default function KakaoLogin() {
     nickname: ""
   })
   React.useEffect(() => {
-        
-    const params= new URL(document.location.toString()).searchParams
-      const code = params.get('code')
-
-      const param: any = {
-          grant_type: 'authorization_code',
-          client_id: '7e7b63658cacaa73e2a412dcd713bb8a',
-          redirect_uri: 'http://localhost:3000/kakaoRedirect',
-          code: code,
+      const data ={
+        grant_type: 'authorization_code',
+        client_id: '7e7b63658cacaa73e2a412dcd713bb8a',
+        redirect_uri: new URL(document.location.origin ) +'/kakaoRedirect',
+        code: new URL(document.location.toString()).searchParams.get('code')
       }
       // console.log('param ::', param)
       const config = {
         headers: {
             'Authorization': 'Bearer ',
-            'Content-type': 'application/x-www-form-urlencodedcharset=utf-8'
-          }
+            'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
       }
-      // console.log('config ::', config)
-      const queryString = Object.keys(param).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(param[key])).join('&')
-      console.log('queryString ::', queryString+ ', {}, { headers: { "Content-type": "application/x-www-form-urlencodedcharset=utf-8" } }')
-
-      // access_token 발급받기
-      axios.post('https://kauth.kakao.com/oauth/token?' + queryString, config)
-      .then((response : any) => {
+      
+      axios.post('https://kauth.kakao.com/oauth/token', data, config) 
+      .then((response ) => {
         console.log(response.data)
         config.headers.Authorization += response.data.access_token
         console.log('config :: ',config)
 
         axios.post('https://kapi.kakao.com/v2/user/me', {}, config)
-          .then((res) => {
-            console.log('개인 정보 확인 ', res.data.properties.nickname)
-            const nickname = res.data.properties.nickname
-            setUserInfo({nickname})
-            // console.log('userinfo ::', userInfo)
+        .then((res) => {
+          console.log('개인 정보 확인 ', res.data.properties.nickname)
+          const nickname = res.data.properties.nickname
+          setUserInfo({nickname})
+          window.alert('로그인 햇습니다')
+          // console.log('userinfo ::', userInfo)
         })
-      })
-      .catch(error => {
-          console.error(error)
-      })
-      console.log()
-        
+        .catch(error => {
+          console.error(error)   
+          window.alert('로그인을 실패했습니다.')
+        })
+      })        
     }, [])
   
   return (
