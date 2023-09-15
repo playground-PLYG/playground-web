@@ -6,7 +6,10 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
 export default function KakaoLogout() {
-  
+  React.useEffect(() => {
+    localStorage.removeItem('TOKEN')
+    
+  }, [])
   return (
     <Container>
       <Box
