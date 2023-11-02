@@ -135,7 +135,7 @@ const TableSample = () => {
       )
       .then(
         ({
-          data: {
+          data: {  
             data: { content, totalElements, empty },
           },
         }) => {
