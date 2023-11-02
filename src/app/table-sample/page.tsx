@@ -67,7 +67,7 @@ const headCells: readonly HeadCell[] = [
   },
 ]
 
-// 데이터 loading 시 skeleton 표시
+// 데이터 loading 시 skeleton 표시    
 const TableRowsLoader: React.FC<{ rowsNum: number }> = ({ rowsNum }) => {
   return [...Array<number>(rowsNum)].map((row, index) => (
     <TableRow key={index}>
