@@ -353,7 +353,7 @@ const TableSample = () => {
           count={totalCount}
           rowsPerPage={rowsPerPage}
           page={page}
-          showFirstButton={true}
+          showFirstButton={true}   
           showLastButton={true}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
